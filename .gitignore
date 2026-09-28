@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+checkpoints/ner/
+checkpoints/train.spacy
+checkpoints/dev.spacy
+output/
+.kaggle_deploy/
+kernel-metadata.json
