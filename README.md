@@ -26,3 +26,32 @@ A document intelligence system for unstructured documents.
 - Custom entity recognition
 - EntityRuler
 - Dependency parsing
+- Custom text categorization
+- spaCy training pipelines https://spacy.io/usage/training
+  (spaCy uses CNN-based / statistical / transformer architectures internally —
+  spaCy is a framework, not a single neural architecture)
+
+## What makes it impressive
+
+A **custom NER model** for company names, invoice numbers, VAT numbers, dates,
+monetary values and customer names — exposed through an API.
+
+> See the master document `../../ai-projects-portfolio.md` for the shared
+> system architecture, the 9 mandatory ML-engineering requirements, and MLflow
+> experiment tracking guidance.
+
+---
+
+### How to Run Your Own Training on Kaggle
+
+#### Option 1: Standard Kaggle CLI
+
+1. Inside your project folder, create `kernel-metadata.json`:
+
+    ```json
+    {
+      "id": "khentitsafouaneamine/document-intelligence-train",
+      "title": "document intelligence train",
+      "code_file": "train.py",
+      "language": "python",
+      "kernel_type": "script",
