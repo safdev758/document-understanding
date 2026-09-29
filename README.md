@@ -62,3 +62,11 @@ monetary values and customer names — exposed through an API.
     ```
 
 2. Push and launch training:
+
+    ```bash
+    kaggle kernels push -p .
+    ```
+
+3. Check status:
+
+    ```bash
