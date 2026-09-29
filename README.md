@@ -55,3 +55,10 @@ monetary values and customer names — exposed through an API.
       "code_file": "train.py",
       "language": "python",
       "kernel_type": "script",
+      "is_private": true,
+      "enable_gpu": true,
+      "enable_internet": true
+    }
+    ```
+
+2. Push and launch training:
