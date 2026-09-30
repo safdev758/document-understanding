@@ -55,25 +55,3 @@ monetary values and customer names — exposed through an API.
       "code_file": "train.py",
       "language": "python",
       "kernel_type": "script",
-      "is_private": true,
-      "enable_gpu": true,
-      "enable_internet": true
-    }
-    ```
-
-2. Push and launch training:
-
-    ```bash
-    kaggle kernels push -p .
-    ```
-
-3. Check status:
-
-    ```bash
-    kaggle kernels status khentitsafouaneamine/document-intelligence-train
-    ```
-
-4. Download trained checkpoints / outputs:
-
-    ```bash
-    kaggle kernels output khentitsafouaneamine/document-intelligence-train -p ./output
