@@ -70,3 +70,10 @@ monetary values and customer names — exposed through an API.
 3. Check status:
 
     ```bash
+    kaggle kernels status khentitsafouaneamine/document-intelligence-train
+    ```
+
+4. Download trained checkpoints / outputs:
+
+    ```bash
+    kaggle kernels output khentitsafouaneamine/document-intelligence-train -p ./output
