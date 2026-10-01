@@ -91,3 +91,6 @@ python3 kaggle_runner.py bundle --src ./08-document-understanding \
 > `--src` at this folder.
 
 ### Production serving (L13): API + Docker + MLflow
+
+The serving stack bundles the locally retrained NER model
+(`checkpoints/ner_model_final`, same seed/params as the Kaggle kernel: 320 train
