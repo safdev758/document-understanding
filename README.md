@@ -88,3 +88,6 @@ python3 kaggle_runner.py bundle --src ./08-document-understanding \
 ```
 
 > Run the bundle command from `projects/` (the parent directory), pointing
+> `--src` at this folder.
+
+### Production serving (L13): API + Docker + MLflow
