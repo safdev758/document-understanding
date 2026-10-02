@@ -94,3 +94,6 @@ python3 kaggle_runner.py bundle --src ./08-document-understanding \
 
 The serving stack bundles the locally retrained NER model
 (`checkpoints/ner_model_final`, same seed/params as the Kaggle kernel: 320 train
+docs seed 2025, efficiency config, 24 epochs) plus the EntityRuler built from
+code, merged by `merge_hybrid` (NER wins overlaps, ruler fills gaps).
+
