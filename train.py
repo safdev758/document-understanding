@@ -47,3 +47,19 @@ def main():
     baseline = evaluate_ents(extract_ents(ruler_nlp, test_texts), test_ents)
     metrics["entity_ruler"] = baseline
     print("[RULER]", json.dumps(baseline["micro"]), json.dumps(baseline["per_type"]))
+
+    print(f"\n[NER] training custom spaCy NER ({args.epochs} epochs)...")
+    from src.train_ner import train_custom_ner
+    ner_nlp = train_custom_ner(train_db, workdir / "dev.spacy", workdir / "ner_model", epochs=args.epochs)
+    ner_nlp.to_disk(workdir / "ner_model_final")
+    ner_result = evaluate_ents(extract_ents(ner_nlp, test_texts), test_ents)
+    metrics["trained_ner"] = ner_result
+    print("[NER]", json.dumps(ner_result["micro"]), json.dumps(ner_result["per_type"]))
+
+    print("\n[HYBRID] NER + EntityRuler gap-filling...")
+    hybrid = evaluate_ents(
+        merge_hybrid(extract_ents(ner_nlp, test_texts), extract_ents(ruler_nlp, test_texts)),
+        test_ents,
+    )
+    metrics["hybrid"] = hybrid
+    print("[HYBRID]", json.dumps(hybrid["micro"]), json.dumps(hybrid["per_type"]))
