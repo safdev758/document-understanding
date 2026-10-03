@@ -63,3 +63,20 @@ def main():
     )
     metrics["hybrid"] = hybrid
     print("[HYBRID]", json.dumps(hybrid["micro"]), json.dumps(hybrid["per_type"]))
+
+    failure_clues = []
+    for i, pred in enumerate(extract_ents(ner_nlp, test_texts)):
+        missed = set(test_ents[i]) - set(pred)
+        for s, e, l in missed:
+            failure_clues.append({"doc": i, "label": l, "missing_text": test_texts[i][s:e]})
+    metrics["sample_misses_trained_ner"] = failure_clues[:20]
+
+    (output_dir / "metrics.json").write_text(json.dumps(metrics, indent=2))
+    print("\n📌 FINAL METRICS:")
+    print(json.dumps({k: v["micro"] if isinstance(v, dict) and "micro" in v else v
+                      for k, v in metrics.items() if k != "meta"}, indent=2))
+    print("\n🏁 PIPELINE COMPLETE")
+
+
+if __name__ == "__main__":
+    main()
