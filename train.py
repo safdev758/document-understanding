@@ -30,3 +30,20 @@ def main():
     train_texts, train_ents = generate_split(args.n_train, args.seed, TRAIN_COMPANIES)
     dev_texts, dev_ents = generate_split(args.n_dev, args.seed + 1, TRAIN_COMPANIES)
     test_texts, test_ents = generate_split(args.n_test, args.seed + 2, TRAIN_COMPANIES)
+    n_novel = int(args.n_test * args.novel_ratio)
+    novel_texts, novel_ents = generate_split(n_novel, args.seed + 3, NOVEL_COMPANIES)
+    for t, e in zip(novel_texts, novel_ents):
+        test_texts.append(t)
+        test_ents.append(e)
+    print(f"[DATA] train={len(train_texts)} dev={len(dev_texts)} test={len(test_texts)} ({n_novel} with NOVEL company names)")
+
+    train_db = build_docbin(train_texts, train_ents, workdir / "train.spacy")
+    build_docbin(dev_texts, dev_ents, workdir / "dev.spacy")
+
+    metrics = {"meta": vars(args)}
+
+    print("\n[BASELINE] EntityRuler-only...")
+    ruler_nlp = build_ruler_pipeline(TRAIN_COMPANIES)
+    baseline = evaluate_ents(extract_ents(ruler_nlp, test_texts), test_ents)
+    metrics["entity_ruler"] = baseline
+    print("[RULER]", json.dumps(baseline["micro"]), json.dumps(baseline["per_type"]))
