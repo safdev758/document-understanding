@@ -1,0 +1,8 @@
+*.pyc
+__pycache__/
+.ipynb_checkpoints/
+checkpoints/train.spacy
+checkpoints/dev.spacy
+checkpoints/ner/
+output/
+*.md

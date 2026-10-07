@@ -97,3 +97,12 @@ The serving stack bundles the locally retrained NER model
 docs seed 2025, efficiency config, 24 epochs) plus the EntityRuler built from
 code, merged by `merge_hybrid` (NER wins overlaps, ruler fills gaps).
 
+```bash
+# 1. Quick sanity check with pytest:
+python3 -m pytest tests/test_api.py -q
+
+# 2. Serve locally:
+uvicorn src.api:app --port 8000                  # then POST /invoice
+
+# 3. Serve in Docker:
+docker build -t invoice-api:1.0 .
