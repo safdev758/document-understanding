@@ -15,3 +15,15 @@
 - `output/hybrid_local_metrics.json` — dev 1.000, novel-company 0.93 P/R
 - `output/seed_local_metrics.json` — 3-seed robustness study (dev F1 flat 1.000,
   novel F1 0.932 / 0.860 / 0.932)
+
+## Docker
+
+- `invoice-api:1.0` (1.37GB, CPU-only torch) — serves hybrid NER + EntityRuler
+  merge; `/invoice` (JSON) and `/invoice_upload` (multipart) return entity
+  spans with `missing`/`suspicious` required-field flags; live-tested on a
+  fresh synthetic invoice
+
+## MLflow
+
+- experiment `document-intelligence_training` run `8e7f9757a1c04e46b08063142b54bf27`
+  (hybrid_local_metrics) also `seed` and `progress` runs

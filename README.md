@@ -106,3 +106,17 @@ uvicorn src.api:app --port 8000                  # then POST /invoice
 
 # 3. Serve in Docker:
 docker build -t invoice-api:1.0 .
+docker run -d --name invoice-api -p 8000:8000 invoice-api:1.0
+curl localhost:8000/health
+curl -X POST localhost:8000/invoice -H 'Content-Type: application/json' \
+     -d '{"text": "INVOICE\nFrom: ..."}'
+
+# 4. Log a pulled training run to MLflow:
+python3 src/mlflow_log.py --project document-intelligence \
+    --kernel khentitsafouaneamine/document-intelligence-train \
+    --metrics output/hybrid_local_metrics.json
+```
+
+Endpoints:
+- `GET /health` → model path + required entity types
+- `POST /invoice` (JSON `{"text": ...}`) → hybrid entities
