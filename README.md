@@ -120,3 +120,25 @@ python3 src/mlflow_log.py --project document-intelligence \
 Endpoints:
 - `GET /health` → model path + required entity types
 - `POST /invoice` (JSON `{"text": ...}`) → hybrid entities
+  (`start`/`end`/`label`/`text`, NER wins overlaps) + `missing` required fields
+  (COMPANY, INV_NUM, DATE, VAT_NUM, AMOUNT) and `suspicious` flag
+- `POST /invoice_upload` (multipart UTF-8 text file) → same response
+
+### Seed robustness study (novel-set variance)
+
+Same generator, 3 NER seeds (2025/2026/2027), each trained and merged with the
+EntityRuler, evaluated on a shared **novel-company** test set (3 unseen
+companies, 120 docs), `output/seed_local_metrics.json`:
+
+| seed | novel F1 |
+| --- | --- |
+| 2025 | 0.932 |
+| 2026 | **0.860** |
+| 2027 | 0.932 |
+
+Mean 0.908, range 0.072. Same story as project 5's kernel seed study but with a
+scary twist: the **dev set stays at 1.0 across all seeds** while the novel set
+swings ±7 pts — dev-set-perfect metrics overfitting (or, in spaCy terms, the
+tokenizer/label-sequence ceiling) hides true robustness variance. Whenever a
+synthetic-data distribution is claimed "supported", report novel-set variance,
+not dev F1.

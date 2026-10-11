@@ -59,3 +59,44 @@ Local smoke: `python3 train.py --n-train 40 --n-dev 8 --n-test 12 --novel-ratio 
 
 ## L7. Training loop economics
 - **Understand:** loss versus eval frequency: step-0 eval has loss 0 (nothing learned); we stopped too early once through patience misconfiguration (see git history); with patience=inf we hit F1=1.0 at step 200 on 40 tiny docs — synthetic regularity caveat!
+- **Do:** rerun smoke varying `--epochs` 3→12; watch loss + eval score interplay.
+
+## L8. The comparison that matters
+- **Understand:** our EntityRuler = perfect precision, recall dropped on DATE variant + NOVEL companies (test-only names). NER recovered everything *learned weights generalize from context*, not identity lists.
+- **Generate:** from `sample_misses_trained_ner`, categorize failures and argue in 6 sentences which production entity classes should stay rule vs become model.
+
+# Phase 3 — Hybrid + engineering
+
+## L9. Hybrid merge semantics
+- **Understand:** `merge_hybrid` = NER wins overlaps, ruler adds non-overlapping spans (its specialty: rare deterministic formats).
+- **Do:** verify hybrid ≥ max(NER, ruler) on F1 in the full Kaggle run.
+- **Generate:** what failure mode could make the hybrid WORSE than pure NER? Name one and design a pre-merge filter.
+
+## L10. Production ships
+- **Do:** full Kaggle run (320 train / 60 dev / 120 test, 24 epochs, no GPU); pull `metrics.json`.
+- **L11.** FastAPI `POST /invoice` returning JSON with entities + confidence flags, Dockerfile, tests for rules (deterministic) and NER (statistical).
+- **L12.** Then port to CoNLL-2003 as second corpus (real data, messier): attach a Kaggle CoNLL dataset, retrain, and compare micro-F1 with the synthetic invoices — write down honestly what the synthetic gap means.
+
+---
+
+# Flashcards (spaced review — never explore with these in front of you)
+
+- C1 (L1): The 3 components of an entity annotation, and where offsets are anchored (start_char inclusive, end_char exclusive).
+- C2 (L2): How spaCy tokenizes `INV-2025-5012`, `12,345.67`, and `2025-04-23`.
+- C3 (L3): What object stores training data on disk, and which function raises on misaligned offsets?
+- C4 (L4): The 5 pattern predicates in the token DSL used by the baseline.
+- C5 (L5): Why does the COMPANY EntityRuler have recall 0.667 on our test set but still enough to be useful? trade-off.
+- C6 (L6): What component lives before NER inside the pipeline, and what does it do?
+- C7 (L7): What does `patience` mean in spaCy 3.7+? What mistake did we hit and how was it caught?
+- C8 (L8): Lessons on when rules generalize better than a model (rare deterministic formats) and vice versa (context-based identity patterns).
+- C9 (L9): Hybrid merge operator — give the 1-sentence contract and one way it breaks.
+- C10 (L10): Which of the 3 systems believed in window-dressing and which didn't: sample the misses list to argue.
+
+# Spacing protocol
+- Session opens: 4 random cards cold.
+- D+2 after L6: patch one rule pattern live, compare against the trained model (5 min).
+- D+7 after L8: re-derive by hand how Example.from_dict enforces alignment (whiteboard & error path).
+- D+21: rebuild the full pipeline from scratch, no notes.
+
+# Final gate (portfolio checklist)
+EDA → baseline → implement → experiment → evaluate → deploy → containerize → monitor → document, with ruler-vs-NER-vs-hybrid table front and center.
