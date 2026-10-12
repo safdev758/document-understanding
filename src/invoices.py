@@ -70,3 +70,35 @@ def random_invoice_text(rng: random.Random, companies):
 
 def weighted(rng: random.Random, pairs):
     r = rng.random()
+    acc = 0.0
+    for val, w in pairs:
+        acc += w
+        if r < acc:
+            return val
+    return pairs[-1][0]
+
+
+def generate_split(n: int, seed: int, companies=None):
+    rng = random.Random(seed)
+    texts, ents = [], []
+    for _ in range(n):
+        t, e = random_invoice_text(rng, companies or TRAIN_COMPANIES)
+        texts.append(t)
+        ents.append(e)
+    return texts, ents
+
+
+def build_docbin(texts, ents, out_path: Path):
+    import spacy
+    from spacy.tokens import DocBin
+    from spacy.training import Example
+
+    nlp = spacy.blank("en")
+    db = DocBin()
+    for text, offsets in zip(texts, ents):
+        doc = nlp.make_doc(text)
+        example = Example.from_dict(doc, {"entities": offsets})
+        db.add(example.reference)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    db.to_disk(out_path)
+    return out_path

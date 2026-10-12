@@ -13,3 +13,10 @@ def add_invoice_ruler(nlp, known_companies):
         {"label": "DATE", "pattern": [{"LIKE_NUM": True}, {"LIKE_NUM": True}, {"LIKE_NUM": True}]},
         {"label": "AMOUNT", "pattern": [{"ORTH": {"IN": ["EUR", "$", "€", "USD", "CHF"]}}, {"LIKE_NUM": True}]},
     ] + [{"label": "COMPANY", "pattern": c} for c in known_companies])
+    return ruler
+
+
+def build_ruler_pipeline(known_companies):
+    nlp = spacy.blank("en")
+    add_invoice_ruler(nlp, known_companies)
+    return nlp

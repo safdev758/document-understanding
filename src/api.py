@@ -49,3 +49,22 @@ def create_app():
     def health():
         return {"status": "ok", "model": str(MODEL_PATH), "required": list(REQUIRED_LABELS)}
 
+    @app.post("/invoice", response_model=ExtractResponse)
+    def invoice_json(req: dict):
+        text = req.get("text")
+        if not text or not isinstance(text, str):
+            raise HTTPException(status_code=400, detail="body must be JSON with a \"text\" field")
+        return extract(text)
+
+    @app.post("/invoice_upload", response_model=ExtractResponse)
+    def invoice_file(file: UploadFile = File(...)):
+        try:
+            text = file.file.read().decode("utf-8")
+        except UnicodeDecodeError:
+            raise HTTPException(status_code=400, detail="file must be UTF-8 text")
+        return extract(text)
+
+    return app
+
+
+app = create_app()
